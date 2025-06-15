@@ -1,0 +1,3 @@
+[submodule "ext/vodozemac_bindings"]
+	path = ext/vodozemac_bindings
+	url = https://lily-is.land/kazv/vodozemac-bindings.git
