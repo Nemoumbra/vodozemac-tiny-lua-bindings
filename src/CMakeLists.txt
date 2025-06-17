@@ -35,3 +35,20 @@ add_dependencies(VodozemacBindings_static VodozemacRustBindings)
 target_include_directories(VodozemacBindings_static PUBLIC .)
 target_include_directories(VodozemacBindings_static PUBLIC ${VODOZEMAC_INCLUDES})
 target_link_libraries(VodozemacBindings_static ${VODOZEMAC_LIBS}/libvodozemac.a)
+
+
+
+
+set(LUA_PATH ${CMAKE_BINARY_DIR}/lua_bindings)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LUA REQUIRED lua-5.4)
+
+add_library(VodozemacLua SHARED lua_bindings.c)
+target_include_directories(VodozemacLua PUBLIC ${LUA_INCLUDE_DIRS})
+target_link_libraries(VodozemacLua VodozemacBindings_static)
+set_target_properties(VodozemacLua PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+set_target_properties(VodozemacLua PROPERTIES PREFIX "")
+set_target_properties(VodozemacLua PROPERTIES OUTPUT_NAME "megolm")
+set_target_properties(VodozemacLua PROPERTIES  LIBRARY_OUTPUT_DIRECTORY ${LUA_PATH})
