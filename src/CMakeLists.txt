@@ -42,7 +42,7 @@ target_link_libraries(VodozemacBindings_static ${VODOZEMAC_LIBS}/libvodozemac.a)
 set(LUA_PATH ${CMAKE_BINARY_DIR}/lua_bindings)
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(LUA REQUIRED lua-5.4)
+pkg_check_modules(LUA REQUIRED lua-5.3)
 
 add_library(VodozemacLua SHARED lua_bindings.c)
 target_include_directories(VodozemacLua PUBLIC ${LUA_INCLUDE_DIRS})
