@@ -9,12 +9,14 @@ namespace bridge {
         rust::Box<vodozemac::megolm::SessionKey> key;
         rust::Box<vodozemac::megolm::InboundGroupSession> session;
 
-        DecryptionSession(const char* key_b64);
+        explicit DecryptionSession(const char* key_b64);
     };
 
-    struct MegolmMsg {
+    struct MegolmMessage {
         rust::Box<vodozemac::megolm::MegolmMessage> message;
 
-        MegolmMsg(const char* message_b64);
+        explicit MegolmMessage(const char* message_b64);
     };
+
+
 }

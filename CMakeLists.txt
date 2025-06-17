@@ -3,29 +3,17 @@ project(VodozemacTests)
 
 set(CMAKE_CXX_STANDARD 23)
 
-find_program(MAKE_EXE NAMES gmake nmake make)
-
-add_custom_target(
-    VodozemacRustBindings
-    COMMAND ${MAKE_EXE} -C ${CMAKE_SOURCE_DIR}/ext/vodozemac_bindings/cpp PREFIX=output install
-)
-
-
-add_library(VodozemacBindings_shared SHARED bridge.cpp)
-add_dependencies(VodozemacBindings_shared VodozemacRustBindings)
-
-
-target_include_directories(VodozemacBindings_shared PUBLIC .)
-target_include_directories(VodozemacBindings_shared PUBLIC ${CMAKE_SOURCE_DIR}/ext/vodozemac_bindings/cpp/output/include)
-target_link_libraries(VodozemacBindings_shared ${CMAKE_SOURCE_DIR}/ext/vodozemac_bindings/cpp/output/lib/libvodozemac.a)
-
-add_library(VodozemacBindings_static STATIC bridge.cpp)
-add_dependencies(VodozemacBindings_static VodozemacRustBindings)
-
-target_include_directories(VodozemacBindings_static PUBLIC .)
-target_include_directories(VodozemacBindings_static PUBLIC ${CMAKE_SOURCE_DIR}/ext/vodozemac_bindings/cpp/output/include)
-target_link_libraries(VodozemacBindings_static ${CMAKE_SOURCE_DIR}/ext/vodozemac_bindings/cpp/output/lib/libvodozemac.a)
-
+add_subdirectory(src)
 
 add_executable(PureCTest test.c)
+target_include_directories(PureCTest PUBLIC ${VodozemacBindings_static_INCLUDES})
 target_link_libraries(PureCTest VodozemacBindings_static)
+
+# WIP
+set(VODOZEMAC_PATH ${CMAKE_BINARY_DIR}/rust_bindings)
+set(VODOZEMAC_INCLUDES ${VODOZEMAC_PATH}/include)
+set(VODOZEMAC_LIBS ${VODOZEMAC_PATH}/lib)
+
+add_executable(CppTests main.cpp)
+target_include_directories(CppTests PUBLIC ${VODOZEMAC_INCLUDES})
+target_link_libraries(CppTests PUBLIC ${VODOZEMAC_LIBS}/libvodozemac.a)
