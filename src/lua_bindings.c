@@ -1,5 +1,6 @@
-#include <lua.h>
-#include <lauxlib.h>
+#include "lua.h"
+#include "lauxlib.h"
+
 #include <stddef.h>
 
 #include "c_bindings.h"
@@ -36,9 +37,11 @@ static int new_message(lua_State *L) {
     int arg = lua_gettop(L) == 2 ? 2 : 1;
     const char *msg_b64 = luaL_checkstring(L, arg);
 
-    // WARNING, this might not work with Wireshark's Lua version
-    // HMegolmMessage **msg_ptr = (HMegolmMessage **)lua_newuserdatauv(L, sizeof(HMegolmMessage *), 0);
-     HMegolmMessage **msg_ptr = (HMegolmMessage **)lua_newuserdata(L, sizeof(HMegolmMessage *));
+#if LUA_VERSION_NUM >= 504
+    HMegolmMessage **msg_ptr = (HMegolmMessage **)lua_newuserdatauv(L, sizeof(HMegolmMessage *), 0);
+#else
+    HMegolmMessage **msg_ptr = (HMegolmMessage **)lua_newuserdata(L, sizeof(HMegolmMessage *));
+#endif
 
     *msg_ptr = build_megolm_message(msg_b64);
 
@@ -57,9 +60,12 @@ static int new_session(lua_State *L) {
     int arg = lua_gettop(L) == 2 ? 2 : 1;
     const char *key_b64 = luaL_checkstring(L, arg);
 
-    // WARNING, this might not work with Wireshark's Lua version
-    // HDecryptionSession **session_ptr = (HDecryptionSession **)lua_newuserdatauv(L, sizeof(HDecryptionSession *), 0);
+#if LUA_VERSION_NUM >= 504
+    HDecryptionSession **session_ptr = (HDecryptionSession **)lua_newuserdatauv(L, sizeof(HDecryptionSession *), 0);
+#else
     HDecryptionSession **session_ptr = (HDecryptionSession **)lua_newuserdata(L, sizeof(HDecryptionSession *));
+#endif
+
     *session_ptr = build_decryption_session(key_b64);
 
     if (!*session_ptr) {
